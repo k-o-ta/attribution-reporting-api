@@ -1305,7 +1305,7 @@ To <dfn>trigger event-level attribution</dfn> given an [=attribution trigger=] |
         [=match an attribution source's filter data against filters/isNegated=] set to true is false, [=iteration/continue=].
     1. Set |matchedConfig| to |config|.
     1. [=iteration/Break=].
-1. If |matchedConfig| is null, return.
+1. If |matchedConfig| is null, return <strong>dropped</strong>.
 1. If |matchedConfig|'s [=event-level trigger configuration/dedup key=] is not null and
     |sourceToAttribute|'s [=attribution source/dedup keys=] [=list/contains=] it, return <strong>dropped</strong>.
 1. Let |numMatchingReports| be the number of entries in the [=event-level report cache=] whose
@@ -1534,6 +1534,7 @@ required aggregatable budget</dfn> is the total [=aggregatable contribution/valu
 To <dfn>obtain an aggregatable report</dfn> given an [=attribution source=] |source| and
 an [=attribution trigger=] |trigger|:
 
+1. Let |reportTime| be the result of running [=obtain an aggregatable report delivery time=] with |trigger|'s [=attribution trigger/trigger time=].
 1. Let |report| be a new [=aggregatable report=] struct whose items are:
 
     : [=aggregatable report/reporting endpoint=]
@@ -1543,9 +1544,9 @@ an [=attribution trigger=] |trigger|:
     : [=aggregatable report/source time=]
     :: |source|'s [=attribution source/source time=].
     : [=aggregatable report/original report time=]
-    :: The result of running [=obtain an aggregatable report delivery time=] with |trigger|'s [=attribution trigger/trigger time=].
+    :: |reportTime|.
     : [=aggregatable report/report time=]
-    :: |report|'s [=aggregatable report/original report time=].
+    :: |reportTime|.
     : [=aggregatable report/report id=]
     :: The result of [=generating a random UUID=].
     : [=aggregatable report/source debug key=]
@@ -1834,6 +1835,8 @@ To <dfn>attempt to deliver a debug report</dfn> given an [=attribution report=] 
     [=generate a report URL/isDebugReport=] set to true.
 1. Let |request| be the result of executing [=create a report request=] on |report|.
 1. [=Fetch=] |request|.
+
+Issue: Update for [=aggregatable report=].
 
 Issue(220): This fetch should use a network partition key for an opaque origin.
 
